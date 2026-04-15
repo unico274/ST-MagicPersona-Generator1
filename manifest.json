@@ -1,0 +1,10 @@
+{
+    "name": "Magic Persona Generator",
+    "display_name": "专属魔法设定工坊",
+    "description": "一键生成通用/现代/古风角色及衍生档案，无缝对接酒馆大模型API，支持读取酒馆预设角色卡片，自带档案存档与回收站功能。",
+    "version": "1.0.0",
+    "author": "猫猫雨",
+    "js": "index.js",
+    "css": "style.css",
+    "html": "index.html"
+}
