@@ -1,0 +1,1 @@
+# ST-MagicPersona-Generator1
