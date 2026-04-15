@@ -2,7 +2,7 @@ import { generateRaw, characters } from "../../../../script.js";
 import { getContext } from "../../../extensions.js";
 
 // ==========================================
-// 核心配置与庞大标签字典（完美保留原版）
+// 核心配置与庞大标签字典
 // ==========================================
 const HC_COMMON=["随机","樱花粉","银白霜雪","雾霾蓝","薄荷绿","玫瑰金","亚麻灰绿","琥珀茶棕","巧克力色","黑茶色","鸦青色","冰川蓝","极光紫","晨曦微光金","暮色橘","冷灰紫","香槟金","海王红","蜜桃粉","薰衣草紫","星空蓝紫渐变","奶茶棕","原生墨黑","白茶色","流沙金","深海蓝","复古红棕","青木亚麻","冷调铂金","暖阳橘棕","枫叶红","鸢尾紫","薄藤色","砂金","焦糖色","黑莓紫","极地银灰","初雪白","珊瑚橘","人鱼姬粉","冷翠绿","蓝莓色","香草金","栗子棕","粉紫渐变","黑白阴阳染","挂耳挑染银","裙摆染粉","奶霜白","星河银","孔雀蓝","酒红色","脏橘色","浅香槟","灰蓝渐变","樱花渐变白","曜石黑","深茶紫","奶茶灰棕","极昼白","暗夜紫"];
 const EC_COMMON=["随机","曜石黑","琉璃蓝","翡翠绿","琥珀金","桃花粉","星空紫","异色瞳(蓝金)","异色瞳(红绿)","极地冰蓝","暮色橘","银灰霜雪","鸽血红","深海幽蓝","浅雾灰","茶棕色","薄荷青","紫水晶色","玫瑰红","流沙金","苍青色","猫眼金绿","孔雀蓝","红宝石色","清透水蓝","暖阳金","迷雾紫","初雪白","深空黑","冷月银","星芒异色瞳","碧水绿","琉璃浅棕","幽冥深紫","极光绿","幻彩人鱼瞳","樱花浅粉","黑珍珠色","深褐色","酒红色","琥珀澄黄","冷冽灰蓝","星辰大海色","温柔奶茶棕","魅惑狐金","冰湖蓝","月光石白","冷翡翠","血泊红","空灵浅紫","晶石蓝"];
@@ -115,7 +115,8 @@ function initLoadedItems() {
 
 
 // ==========================================
-// 酒馆大模型无缝连通 API (核心改动)
+// 酒馆大模型无缝连通 API
+// 如果出现443，说明你的魔法梯子没开全局/没代理Node后台！
 // ==========================================
 async function executeApiRequest(promptText, titleText, saveCategory, saveTitlePrefix, saveName, bindId = null) {
     const magicOverlay = document.getElementById('magic-overlay');
@@ -136,7 +137,13 @@ async function executeApiRequest(promptText, titleText, saveCategory, saveTitleP
         saveToHeart(saveCategory, saveTitlePrefix, saveName, fullText, bindId);
     } catch(error) {
         magicOverlay.style.display='none'; resultCard.classList.remove('hidden');
-        resultTextArea.innerHTML=`<span style="color:var(--mc-coral)">酒馆 API 召唤失败: ${error.message}，请确保你的酒馆主界面连接了有效的大模型 API。</span>`;
+        // 加入对 443 错误的明确提示说明
+        let errorMsg = error.message;
+        if(errorMsg.includes('443') || errorMsg.includes('fetch') || errorMsg.includes('network')) {
+            errorMsg = `<br>🔴 <b>遇到网络 443 拒绝连接错误！</b><br>这证明：你的酒馆后台 Node.js 连不上你配置的 API 大模型。<br>
+            💡 解决办法：请确保你的翻墙软件开了<b>“TUN模式/全局代理”</b>，或者去酒馆启动配置里设置代理端口。`;
+        }
+        resultTextArea.innerHTML=`<span style="color:var(--mc-coral)">酒馆 API 召唤失败: ${errorMsg}</span>`;
     }
 }
 
@@ -144,8 +151,7 @@ async function executeApiRequest(promptText, titleText, saveCategory, saveTitleP
 // ==========================================
 // 角色卡提取机制
 // ==========================================
-function populateTavernCharacters() {
-    ['g', 'm', 'a'].forEach(prefix => {
+function populateTavernCharacters() {['g', 'm', 'a'].forEach(prefix => {
         const select = document.getElementById(`${prefix}-st-char-select`);
         if(!select) return;
         select.innerHTML = '<option value="">点击此处选择酒馆角色...</option>';
@@ -524,7 +530,7 @@ function copyUniverse() { navigator.clipboard.writeText(document.getElementById(
 
 
 // ==========================================
-// 注册进酒馆扩展系统 (完美修复版)
+// 注册进酒馆扩展系统
 // ==========================================
 jQuery(document).ready(function () {
     const extPath = getContext().extensionFolderPath;
